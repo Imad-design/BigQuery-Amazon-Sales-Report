@@ -38,7 +38,7 @@ WHERE
 select * from `amazon_01.cleaned_sales_report`;
 
 
--- Mengambil 10 produk dengan penjualan tertinggi berdasarkan SKU
+--10 Produk Terlaris berdasarkan SKU
 
 SELECT
   SKU,         -- Kode unik produk
@@ -56,4 +56,68 @@ ORDER BY
   total_sales DESC  -- Ambil yang paling tinggi nilainya
 LIMIT 10;
 
+--Penjualan Berdasarkan Kota (Top 10)
 
+SELECT
+  ship_city,  -- Nama kota pengiriman
+  COUNT(DISTINCT order_id) AS total_orders,  -- Jumlah pesanan ke kota tersebut
+  SUM(Qty) AS total_quantity,                -- Total produk terkirim
+  SUM(Amount) AS total_sales                 -- Total penjualan ke kota
+FROM
+  `imad-database.amazon_01.cleaned_sales_report`
+WHERE
+  LOWER(Status) LIKE 'shipped%'  -- Hanya pesanan yang berhasil dikirim
+GROUP BY
+  ship_city
+ORDER BY
+  total_sales DESC  -- Ranking kota berdasarkan nilai penjualan
+LIMIT 10;
+
+--Ringkasan Penjualan Bulanan
+
+SELECT
+  FORMAT_DATE('%Y-%m', order_date) AS month, -- Format bulan-tahun, contoh: 2025-08
+  COUNT(DISTINCT order_id) AS total_orders,  -- Total pesanan dalam bulan tersebut
+  SUM(Qty) AS total_quantity,                -- Jumlah unit produk yang terjual
+  SUM(Amount) AS total_sales                 -- Total pendapatan dari penjualan
+FROM
+  `imad-database.amazon_01.cleaned_sales_report`
+WHERE
+  LOWER(Status) LIKE 'shipped%'  -- Hanya pesanan yang terkirim
+GROUP BY
+  month
+ORDER BY
+  month;  -- Urutkan berdasarkan urutan bulan
+
+-- Menghitung total penjualan berdasarkan kategori
+-- Hanya mencakup pesanan dengan status "shipped" (dikirim)
+
+SELECT
+  Category,  -- Nama kategori produk
+  COUNT(DISTINCT order_id) AS total_orders,  -- Total pesanan unik per kategori
+  SUM(Qty) AS total_quantity,                -- Total kuantitas barang terjual
+  SUM(Amount) AS total_sales                 -- Total nilai penjualan
+FROM
+  `imad-database.amazon_01.cleaned_sales_report`
+WHERE
+  LOWER(Status) LIKE 'shipped%'  -- Hanya ambil status pesanan yang terkirim
+GROUP BY
+  Category
+ORDER BY
+  total_sales DESC;  -- Urutkan berdasarkan penjualan tertinggi
+
+-- Menampilkan tren penjualan harian sepanjang waktu
+
+SELECT
+  order_date,  -- Tanggal pesanan dilakukan
+  COUNT(DISTINCT order_id) AS total_orders,  -- Jumlah pesanan per hari
+  SUM(Qty) AS total_quantity,                -- Jumlah barang terjual per hari
+  SUM(Amount) AS total_sales                 -- Total nilai penjualan per hari
+FROM
+  `imad-database.amazon_01.cleaned_sales_report`
+WHERE
+  LOWER(Status) LIKE 'shipped%'  -- Hanya pesanan yang terkirim
+GROUP BY
+  order_date
+ORDER BY
+  order_date;  -- Urutkan kronologis berdasarkan tanggal
