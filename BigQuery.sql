@@ -1,7 +1,4 @@
-# BigQuery-Amazon-Sales-Report
-Analysis of Amazon Sales Report by BigQuery
-
-Source Data : https://drive.google.com/file/d/1u2LOhVHSFIW5IMxTxhTQ7BX-Bvu1HfzR/view?usp=sharing
+--Source Data : https://drive.google.com/file/d/1u2LOhVHSFIW5IMxTxhTQ7BX-Bvu1HfzR/view?usp=sharing
 
 --Membersihkan Data
 
