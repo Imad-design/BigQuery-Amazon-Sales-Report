@@ -37,3 +37,23 @@ WHERE
   
 select * from `amazon_01.cleaned_sales_report`;
 
+
+-- Mengambil 10 produk dengan penjualan tertinggi berdasarkan SKU
+
+SELECT
+  SKU,         -- Kode unik produk
+  Category,    -- Kategori produk
+  COUNT(DISTINCT order_id) AS total_orders,  -- Jumlah pesanan unik
+  SUM(Qty) AS total_quantity,                -- Jumlah unit terjual
+  SUM(Amount) AS total_sales                 -- Total nilai penjualan
+FROM
+  `imad-database.amazon_01.cleaned_sales_report`
+WHERE
+  LOWER(Status) LIKE 'shipped%'  -- Filter hanya produk yang sudah dikirim
+GROUP BY
+  SKU, Category
+ORDER BY
+  total_sales DESC  -- Ambil yang paling tinggi nilainya
+LIMIT 10;
+
+
